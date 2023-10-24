@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --dniSizeMultiplier: 1;
+}
+
+@media screen and (max-width: 420px) {
+  :root {
+    --dniSizeMultiplier: 0.825;
+  }
+}
+@media screen and (max-width: 360px) {
+  :root {
+    --dniSizeMultiplier: 0.8;
+  }
+}
+
+* {
+  font-family: Jaldi;
+}
+
+@font-face {
+  font-family: "Jaldi";
+  src: url(/fonts/Jaldi-Regular.ttf);
+}
+
+@font-face {
+  font-family: "SourceCodePro";
+  src: url(/fonts/SourceCodePro/SourceCodePro-Medium.ttf);
+}
+
+@font-face {
+  font-family: "OCRB";
+  src: url(/fonts/OCRB.OTF);
+}
