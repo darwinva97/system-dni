@@ -5,10 +5,8 @@ import { FormEventHandler, useEffect, useMemo, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 
 const useMe = () => {
-  const { data: session, status, update } = useSession();
-  const { data, isLoading, refetch } = api.user.me.useQuery(
-    session?.user?.email!,
-  );
+  const { status, update } = useSession();
+  const { data, isLoading, refetch } = api.user.me.useQuery();
   const loading = useMemo(() => {
     return status === "loading" || isLoading;
   }, [status, isLoading]);
@@ -19,7 +17,7 @@ const useMe = () => {
   return { data: data || null, isLoading: loading, refetch: refetchMe };
 };
 
-const Admin = () => {
+const Me = () => {
   const { data, isLoading, refetch } = useMe();
   const [editing, setEditing] = useState(false);
   const [userForm, setUserForm] = useState(data);
@@ -43,8 +41,9 @@ const Admin = () => {
 
   return data && userForm ? (
     <div>
-      <header className="flex items-center justify-center gap-2">
+      <header className="flex flex-col items-center justify-center gap-2">
         <h1 className="text-2xl">Hola {data.name}!</h1>
+        <h2 className="text-xl">(rol: {data.role})</h2>
       </header>
       <form
         onSubmit={handleSubmit}
@@ -118,4 +117,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Me;

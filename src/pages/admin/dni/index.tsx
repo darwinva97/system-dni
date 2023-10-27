@@ -1,7 +1,11 @@
 import { api } from "@/utils/api";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 const Admin = () => {
+  const { data: session } = useSession();
+  const meAsUser = session?.user?.role === "user";
+
   const { data: dnis, refetch } = api.dni.getAll.useQuery();
   const { mutateAsync: deleteDni, isLoading: isDeleteLoading } =
     api.dni.delete.useMutation();
@@ -9,9 +13,11 @@ const Admin = () => {
     <div className="flex max-w-full flex-col items-center">
       <header className="mb-4 flex justify-center gap-4">
         <h2 className="text-2xl">DNIs</h2>
-        <Link className="btn btn-primary btn-sm" href={"/admin/dni/create"}>
-          Crear nuevo
-        </Link>
+        {!meAsUser && (
+          <Link className="btn btn-primary btn-sm" href={"/admin/dni/create"}>
+            Crear nuevo
+          </Link>
+        )}
       </header>
 
       <div className="max-w-full overflow-x-auto">
@@ -21,7 +27,7 @@ const Admin = () => {
               <th>DNI</th>
               <th>Nombres</th>
               <th>Apellido</th>
-              <th>Opciones</th>
+              {!meAsUser && <th>Opciones</th>}
             </tr>
           </thead>
           <tbody>
@@ -38,27 +44,31 @@ const Admin = () => {
                 <td>{surname}</td>
                 <td>
                   <div className="flex justify-center gap-1">
-                    <button
-                      disabled={isDeleteLoading}
-                      onClick={async () => {
-                        const confirm = window.confirm(
-                          `Estas seguro de ELIMINAR a ${document} (${name} ${surname})?`,
-                        );
-                        if (confirm) {
-                          await deleteDni(document);
-                          await refetch();
-                        }
-                      }}
-                      className="btn btn-warning btn-sm"
-                    >
-                      Eliminar
-                    </button>
-                    <Link
-                      href={`/admin/dni/edit/${document}`}
-                      className="btn btn-info btn-sm"
-                    >
-                      Editar
-                    </Link>
+                    {!meAsUser && (
+                      <>
+                        <button
+                          disabled={isDeleteLoading}
+                          onClick={async () => {
+                            const confirm = window.confirm(
+                              `Estas seguro de ELIMINAR a ${document} (${name} ${surname})?`,
+                            );
+                            if (confirm) {
+                              await deleteDni(document);
+                              await refetch();
+                            }
+                          }}
+                          className="btn btn-warning btn-sm"
+                        >
+                          Eliminar
+                        </button>
+                        <Link
+                          href={`/admin/dni/edit/${document}`}
+                          className="btn btn-info btn-sm"
+                        >
+                          Editar
+                        </Link>
+                      </>
+                    )}
                     <Link
                       href={`/dni/${document}`}
                       className="btn btn-primary btn-sm"

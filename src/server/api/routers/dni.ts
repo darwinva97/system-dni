@@ -17,6 +17,7 @@ const dniSchema = z.object({
   tramitNumber: z.string(),
   codePDF417: z.string(),
   donor: z.string(),
+  officeNumber: z.string(),
 
   address: z.string(),
   birthPlace: z.string(),

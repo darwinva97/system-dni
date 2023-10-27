@@ -1,4 +1,6 @@
-export const defaultDni = {
+import type { Dni } from "@prisma/client";
+
+export const defaultDni: Dni = {
   document: 45871233,
   photoFace:
     "https://res.cloudinary.com/dpcglvg6o/image/upload/v1698297853/systemdni_uploads/wmitbndlkm0gei2r6gof.png",
@@ -15,6 +17,7 @@ export const defaultDni = {
   tramitNumber: "006900326987238",
   codePDF417: "",
   donor: "",
+  officeNumber: "7372",
 
   address: "CALLE 1 B 1111 FUNES ROSARIO SANTA FE",
   birthPlace: "",

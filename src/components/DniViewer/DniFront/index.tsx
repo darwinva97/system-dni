@@ -1,25 +1,32 @@
 import type { Dni } from "@prisma/client";
 import classes from "../style.module.css";
 import { formatDate, parseDocument } from "@/utils/parse";
+import { useEffect, useRef } from "react";
+import { generateQR } from "@/utils/qr";
 
-export type TDniFrontProps = Omit<Dni, "document" | "tramitNumber"> & {
-  document: number;
-  tramitNumber: number;
-};
-export const DniFront = ({
-  document,
-  name,
-  surname,
-  sex,
-  nationality,
-  exemplar,
-  birthDate,
-  issueDate,
-  expiryDate,
-  tramitNumber,
-  photoFace,
-  photoSignature,
-}: Dni) => {
+export const DniFront = (dni: Dni) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const {
+    document,
+    name,
+    surname,
+    sex,
+    nationality,
+    exemplar,
+    birthDate,
+    issueDate,
+    expiryDate,
+    tramitNumber,
+    photoFace,
+    photoSignature,
+  } = dni;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    generateQR(dni, canvas);
+  }, [canvasRef.current, dni]);
+
   return (
     <>
       <div
@@ -155,6 +162,12 @@ export const DniFront = ({
         className={[classes.dniItem, classes.dniFirma].join(" ")}
         src={photoSignature}
       ></img>
+      <canvas
+        ref={canvasRef}
+        width="141"
+        height="68"
+        className={[classes.dniItem, classes.dniQR].join(" ")}
+      ></canvas>
     </>
   );
 };

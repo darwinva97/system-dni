@@ -5,7 +5,7 @@ import { type AppType } from "next/app";
 import { api } from "@/utils/api";
 
 import "@/styles/globals.css";
-import Link from "next/link";
+import { Layout } from "@/components/Layout";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -13,31 +13,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <div>
-        <header>
-          <div className="navbar bg-base-100">
-            <div className="flex-1">
-              <Link href="/admin/me">Dashboard</Link>
-            </div>
-            <div className="flex-none">
-              <ul className="menu menu-horizontal px-1">
-                <li>
-                  <Link href="/admin/dni">DNI's</Link>
-                </li>
-                <li>
-                  <Link href="/admin/user">Users</Link>
-                </li>
-                <li>
-                  <button onClick={() => void signOut()}>Logout</button>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </header>
-        <main className="p-2">
-          <Component {...pageProps} />
-        </main>
-      </div>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </SessionProvider>
   );
 };

@@ -37,7 +37,7 @@ export const userRouter = createTRPCRouter({
       return null;
     }),
 
-  getUserById: protectedProcedure
+  adminGetUserById: protectedProcedure
     .input(z.number())
     .query(async ({ ctx, input }) => {
       const isAdminOrOwner = checkIsAdminOrOwner(ctx.session.user.role);
@@ -62,6 +62,7 @@ export const userRouter = createTRPCRouter({
         }
         return userData;
       }
+      return null;
     }),
 
   editUser: protectedProcedure
@@ -121,7 +122,14 @@ export const userRouter = createTRPCRouter({
     }),
 
   getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.user.findMany();
+    return ctx.db.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+      },
+    });
   }),
 
   delete: protectedProcedure
@@ -139,20 +147,11 @@ export const userRouter = createTRPCRouter({
       return result;
     }),
 
-  me: protectedProcedure.input(z.string()).query(async ({ ctx, input }) => {
-    const isAdmin = checkIsAdminOrOwner(ctx.session.user.role);
-
-    if (!isAdmin) return null;
-
-    const isOwner = checkIsOwner(ctx.session.user.role);
-
-    const isMatch = ctx.session.user.email === input;
-
-    if (!(isOwner || isMatch)) return null;
-
+  me: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.session.user.email) return null;
     return await ctx.db.user.findFirst({
       where: {
-        email: input,
+        email: ctx.session.user.email,
       },
     });
   }),

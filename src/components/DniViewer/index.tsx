@@ -20,7 +20,10 @@ const styles = {
 
 export const DniViewer = ({ dni, isFlipped, setIsFlipped }: TDniViewer) => {
   return (
-    <div className="inline-flex" onClick={() => setIsFlipped(!isFlipped)}>
+    <div
+      className="inline-flex flex-col items-center justify-center gap-2"
+      onClick={() => setIsFlipped(!isFlipped)}
+    >
       <CardFlip
         isFlipped={isFlipped}
         containerStyle={{
@@ -39,14 +42,18 @@ export const DniViewer = ({ dni, isFlipped, setIsFlipped }: TDniViewer) => {
             backgroundSize: "cover",
           },
         }}
-        children={[
-          <DniFront {...dni} />,
-          <DniBack {...dni} />,
-          // <div className="relative h-[180px] w-[300px]">
-          //   <p>Card 2</p>
-          // </div>,
-        ]}
+        children={[<DniFront {...dni} />, <DniBack {...dni} />]}
       />
+      <div className="flex gap-[8px]">
+        <div
+          style={{ background: isFlipped ? "rgba(0, 0, 0, .75)" : "#1ca4ea" }}
+          className="h-[12.5px] w-[12.5px] rounded-full"
+        ></div>
+        <div
+          style={{ background: isFlipped ? "#1ca4ea" : "rgba(0, 0, 0, .75)" }}
+          className="h-[12.5px] w-[12.5px] rounded-full"
+        ></div>
+      </div>
     </div>
   );
 };

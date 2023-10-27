@@ -93,6 +93,13 @@ export const FrontDniForm = ({
         value={dni.donor}
         onChange={(e) => setDni({ ...dni, donor: e.target.value })}
       />
+
+      <Input
+        label="Número de Oficina"
+        placeholder="officeNumber"
+        value={dni.officeNumber}
+        onChange={(e) => setDni({ ...dni, officeNumber: e.target.value })}
+      />
     </>
   );
 };

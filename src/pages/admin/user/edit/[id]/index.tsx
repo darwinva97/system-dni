@@ -7,7 +7,7 @@ const EditUser = () => {
   const { mutateAsync: editUser } = api.user.editUser.useMutation();
   const router = useRouter();
   const id = useMemo(() => Number(router.query.id), [router.query.id]);
-  const { data: user, refetch } = api.user.getUserById.useQuery(id);
+  const { data: user, refetch } = api.user.adminGetUserById.useQuery(id);
   const [formData, setFormData] = useState(
     user?.password
       ? {
@@ -74,7 +74,7 @@ const EditUser = () => {
       </form>
     </div>
   ) : (
-    <h2>User not found</h2>
+    <h2>El usuario no se ha encontrado o no tiene permisos para verlo</h2>
   );
 };
 

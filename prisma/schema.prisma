@@ -70,7 +70,7 @@ model VerificationToken {
 }
 
 model Dni {
-    document       Int    @id
+    document       Int      @id
     photoFace      String
     photoSignature String
     surname        String
@@ -84,6 +84,7 @@ model Dni {
     tramitNumber   String
     codePDF417     String
     donor          String
+    officeNumber   String
 
     address                        String
     birthPlace                     String
