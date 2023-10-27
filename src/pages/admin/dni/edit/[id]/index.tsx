@@ -1,7 +1,7 @@
 import { api } from "@/utils/api";
 import { useMemo } from "react";
 import { DniForm } from "@/components/DniForm";
-import { Dni } from "@prisma/client";
+import type { Dni } from "@prisma/client";
 import { useRouter } from "next/router";
 
 const EditDni = () => {

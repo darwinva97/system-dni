@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import classes from "./style.module.css";
 import { useRouter } from "next/router";
 import { IoMdArrowBack } from "react-icons/io";

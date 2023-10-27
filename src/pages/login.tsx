@@ -2,14 +2,14 @@ import type { GetServerSidePropsContext } from "next";
 import { signIn } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/server/auth";
-import { FormEventHandler, useState } from "react";
+import { useState, type FormEvent } from "react";
 
 const SignIn = () => {
   const [credentials, setCredentials] = useState({
     email: "",
     password: "",
   });
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await signIn("credentials", {
       ...credentials,
@@ -20,8 +20,8 @@ const SignIn = () => {
 
   return (
     <form
-      className="flex flex-col items-center justify-center gap-2 h-[100vh]"
-      onSubmit={handleSubmit}
+      className="flex h-[100vh] flex-col items-center justify-center gap-2"
+      onSubmit={(e) => void handleSubmit(e)}
     >
       <input
         type="email"
@@ -41,7 +41,9 @@ const SignIn = () => {
         }
         className="input input-bordered w-full max-w-xs"
       />
-      <button type="submit" className="btn btn-primary">Sign In</button>
+      <button type="submit" className="btn btn-primary">
+        Sign In
+      </button>
     </form>
   );
 };

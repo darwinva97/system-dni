@@ -13,10 +13,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const results = await cloudinary.search
+  const results = (await cloudinary.search
     .expression("systemdni*")
     .sort_by("created_at", "desc")
-    .execute();
+    .execute()) as { resources: { secure_url: string }[] };
 
   res.status(200).json({ results });
 }

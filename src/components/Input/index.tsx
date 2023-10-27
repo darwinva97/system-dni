@@ -1,4 +1,4 @@
-import React, { ChangeEvent, HTMLProps } from "react";
+import React, { type ChangeEvent, type HTMLProps } from "react";
 
 export type TInputProps = Omit<HTMLProps<HTMLInputElement>, "onChange"> & {
   label?: string;
@@ -9,7 +9,7 @@ export type TInputProps = Omit<HTMLProps<HTMLInputElement>, "onChange"> & {
 export const Input = ({ label, alt, ...props }: TInputProps) => {
   return (
     <div className="form-control max-w-xs">
-      {(label || alt) && (
+      {(label ?? alt) && (
         <label className="label">
           {label && <span className="label-text">{label}</span>}
           {alt && <span className="label-text-alt">{alt}</span>}

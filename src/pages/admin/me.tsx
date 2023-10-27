@@ -1,7 +1,12 @@
 import { Input } from "@/components/Input";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
-import { FormEventHandler, useEffect, useMemo, useState } from "react";
+import {
+  type FormEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { AiFillEdit } from "react-icons/ai";
 
 const useMe = () => {
@@ -14,7 +19,7 @@ const useMe = () => {
     await update();
     await refetch();
   };
-  return { data: data || null, isLoading: loading, refetch: refetchMe };
+  return { data: data ?? null, isLoading: loading, refetch: refetchMe };
 };
 
 const Me = () => {
@@ -27,7 +32,7 @@ const Me = () => {
     setUserForm(data);
   }, [data]);
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!userForm) return null;
     await editUser(userForm);
@@ -46,7 +51,7 @@ const Me = () => {
         <h2 className="text-xl">(rol: {data.role})</h2>
       </header>
       <form
-        onSubmit={handleSubmit}
+        onSubmit={(e) => void handleSubmit(e)}
         className="flex flex-col items-center justify-center gap-2"
       >
         <main className="flex flex-col items-center justify-center gap-2">

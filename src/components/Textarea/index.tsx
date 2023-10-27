@@ -1,4 +1,4 @@
-import React, { ChangeEvent, HTMLProps } from "react";
+import React, { type ChangeEvent, type HTMLProps } from "react";
 
 export type TTextareaProps = Omit<
   HTMLProps<HTMLTextAreaElement>,
@@ -12,7 +12,7 @@ export type TTextareaProps = Omit<
 export const Textarea = ({ label, alt, ...props }: TTextareaProps) => {
   return (
     <div className="form-control max-w-xs">
-      {(label || alt) && (
+      {(label ?? alt) && (
         <label className="label">
           {label && <span className="label-text">{label}</span>}
           {alt && <span className="label-text-alt">{alt}</span>}

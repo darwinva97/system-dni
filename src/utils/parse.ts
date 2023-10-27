@@ -32,11 +32,11 @@ export function formatDate(fecha: Date) {
 
 export function formatDatePublicDni(fecha: Date) {
   // Formatear la fecha en el formato deseado
-  var dia: string | number = fecha.getDate();
-  var mes: string | number = fecha.getMonth() + 1; // Meses en JavaScript comienzan desde 0
-  var anio: string | number = fecha.getFullYear();
-  var horas: string | number = fecha.getHours();
-  var minutos: string | number = fecha.getMinutes();
+  let dia: string | number = fecha.getDate();
+  let mes: string | number = fecha.getMonth() + 1; // Meses en JavaScript comienzan desde 0
+  const anio: string | number = fecha.getFullYear();
+  let horas: string | number = fecha.getHours();
+  let minutos: string | number = fecha.getMinutes();
 
   // Agregar ceros iniciales si es necesario
   if (mes < 10) {
@@ -52,7 +52,7 @@ export function formatDatePublicDni(fecha: Date) {
     minutos = "0" + minutos;
   }
 
-  var formatoDeseado =
+  const formatoDeseado =
     dia + "/" + mes + "/" + anio + " " + horas + ":" + minutos + " hs";
 
   return formatoDeseado;
@@ -60,7 +60,7 @@ export function formatDatePublicDni(fecha: Date) {
 
 export function formatDatePublicDetail(fecha: Date) {
   // Crear un array con los nombres de los meses en inglés
-  var meses = [
+  const meses = [
     "JAN",
     "FEB",
     "MAR",
@@ -76,14 +76,14 @@ export function formatDatePublicDetail(fecha: Date) {
   ];
 
   // Obtener el día, mes y año
-  var dia: number | string = fecha.getDate();
-  var mes = fecha.getMonth(); // El mes es un número entre 0 y 11
+  let dia: number | string = fecha.getDate();
+  const mes = fecha.getMonth(); // El mes es un número entre 0 y 11
 
   // Obtener el año
-  var anio = fecha.getFullYear();
+  const anio = fecha.getFullYear();
 
   // Formatear el mes en el formato deseado
-  var mesFormateado = meses[mes];
+  const mesFormateado = meses[mes];
 
   // Agregar ceros iniciales al día si es necesario
   if (dia < 10) {
@@ -91,6 +91,6 @@ export function formatDatePublicDetail(fecha: Date) {
   }
 
   // Crear la cadena en el formato deseado
-  var formatoDeseado = dia + "/" + mesFormateado + "/" + anio;
+  const formatoDeseado = dia + "/" + mesFormateado + "/" + anio;
   return formatoDeseado;
 }

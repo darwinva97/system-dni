@@ -1,5 +1,5 @@
 import { api } from "@/utils/api";
-import { FormEventHandler, useState } from "react";
+import { useState, type FormEvent } from "react";
 
 export const CreateUser = () => {
   const createUser = api.user.create.useMutation();
@@ -14,7 +14,7 @@ export const CreateUser = () => {
     password: "",
     role: "admin",
   });
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userCreated = await createUser.mutateAsync(newUser);
     if (userCreated) {
@@ -30,7 +30,10 @@ export const CreateUser = () => {
   return (
     <div className="flex flex-col items-center gap-3">
       <h1 className="text-2xl">Crear usuario</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col items-center gap-3">
+      <form
+        onSubmit={(e) => void handleSubmit(e)}
+        className="flex flex-col items-center gap-3"
+      >
         <input
           type="text"
           placeholder="name"

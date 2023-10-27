@@ -1,10 +1,10 @@
-import { GetStaticProps } from "next";
+import type { GetStaticProps } from "next";
 
 const Index = () => {
   return null;
 };
 
-export const getStaticProps: GetStaticProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = () => {
   return {
     props: {},
     redirect: {

@@ -1,6 +1,6 @@
 import { api } from "@/utils/api";
 import { DniForm } from "@/components/DniForm";
-import { Dni } from "@prisma/client";
+import type { Dni } from "@prisma/client";
 
 const CreateDni = () => {
   const createDni = api.dni.create.useMutation();

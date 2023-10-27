@@ -42,8 +42,10 @@ export const DniViewer = ({ dni, isFlipped, setIsFlipped }: TDniViewer) => {
             backgroundSize: "cover",
           },
         }}
-        children={[<DniFront {...dni} />, <DniBack {...dni} />]}
-      />
+      >
+        <DniFront {...dni} />
+        <DniBack {...dni} />
+      </CardFlip>
       <div className="flex gap-[8px]">
         <div
           style={{ background: isFlipped ? "rgba(0, 0, 0, .75)" : "#1ca4ea" }}

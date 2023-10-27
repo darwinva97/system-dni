@@ -67,11 +67,11 @@ const Admin = () => {
                             disabled={isDeleteLoading}
                             onClick={async () => {
                               const goNext = confirm(
-                                `Are you sure you want to delete to ${name}?`,
+                                `Estas seguro de eliminar a ${name}?`,
                               );
                               if (!goNext) return;
-                              const result = await deleteUser(id);
-                              refetch();
+                              await deleteUser(id);
+                              await refetch();
                             }}
                           >
                             Delete

@@ -1,6 +1,6 @@
 import { generateQR } from "@/utils/qr";
 import type { Dni } from "@prisma/client";
-import { HTMLProps, useEffect, useRef } from "react";
+import { type HTMLProps, useEffect, useRef } from "react";
 
 export const CanvasQR = ({
   dni,

@@ -1,4 +1,4 @@
-import { FormEventHandler, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { DniViewer } from "@/components/DniViewer";
 import { Dni } from "@prisma/client";
 import { defaultDni } from "./data";
@@ -22,8 +22,8 @@ export const DniForm = ({
 }: TDniFormProps) => {
   const [tab, setTab] = useState<TTab>(tabs[0]);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [newDni, setDni] = useState(dni || defaultDni);
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  const [newDni, setDni] = useState(dni ?? defaultDni);
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const dniSaved = await saveDni(newDni);
     if (dniSaved) {
@@ -33,11 +33,15 @@ export const DniForm = ({
     postSave && (await postSave(dniSaved));
   };
   return (
-    <div className="flex gap-2 p-2 flex-wrap">
-      <form onSubmit={handleSubmit} className="flex flex-col items-center max-w-[64%]">
+    <div className="flex flex-wrap gap-2 p-2">
+      <form
+        onSubmit={(e) => void handleSubmit(e)}
+        className="flex max-w-[64%] flex-col items-center"
+      >
         <div className="tabs">
           {tabs.map((tabItem) => (
             <a
+              key={tabItem}
               className={`tab tab-bordered ${
                 tab === tabItem ? "tab-active" : ""
               }`}

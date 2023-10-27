@@ -1,5 +1,5 @@
 import { uploadImage } from "@/utils/uploadImage";
-import { ChangeEventHandler, useRef, useState } from "react";
+import { type ChangeEvent, useRef, useState } from "react";
 import { TfiReload } from "react-icons/tfi";
 
 type TDialog = HTMLDialogElement & {
@@ -22,14 +22,14 @@ export const PickImage = ({
     setLoading(true);
     const images = await fetch("/api/cloudinary")
       .then((r) => r.json())
-      .then((r) =>
+      .then((r: { results: { resources: { secure_url: string }[] } }) =>
         r.results.resources.map((r: { secure_url: string }) => r.secure_url),
       );
     setImages(images);
     setLoading(false);
   };
 
-  const onChangeFile: ChangeEventHandler<HTMLInputElement> = async (e) => {
+  const onChangeFile = async (e: ChangeEvent<HTMLInputElement>) => {
     const image = e.target.files![0]!;
     const secure_url = await uploadImage(image);
     const newImages = [...images];
@@ -97,7 +97,7 @@ export const PickImage = ({
               <input
                 type="file"
                 className="file-input file-input-sm hidden w-full max-w-xs"
-                onChange={onChangeFile}
+                onChange={(e) => void onChangeFile(e)}
               />
             </label>
             <div

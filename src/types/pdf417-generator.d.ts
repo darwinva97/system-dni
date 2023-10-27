@@ -3,7 +3,8 @@ declare module "pdf417-generator" {
   type PDF417 = {
     draw;
   };
-  export default {
+  const toExport = {
     draw,
   };
+  export default toExport;
 }

@@ -1,7 +1,7 @@
 import { Input } from "@/components/Input";
 import { api } from "@/utils/api";
 import { useRouter } from "next/router";
-import { FormEventHandler, useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 
 const EditUser = () => {
   const { mutateAsync: editUser } = api.user.editUser.useMutation();
@@ -12,15 +12,15 @@ const EditUser = () => {
     user?.password
       ? {
           id,
-          name: user!.name,
-          email: user!.email,
-          password: user!.password,
-          role: user!.role as "admin" | "user",
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          role: user.role as "admin" | "user",
         }
       : null,
   );
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!formData?.password) return;
     await editUser(formData);
@@ -30,7 +30,10 @@ const EditUser = () => {
   return user && formData ? (
     <div className="flex max-w-full flex-col items-center gap-2">
       <h1 className="text-2xl">Edit User</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      <form
+        onSubmit={(e) => void handleSubmit(e)}
+        className="flex flex-col gap-2"
+      >
         <Input
           label="Usuario"
           type="text"

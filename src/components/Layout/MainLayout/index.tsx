@@ -13,7 +13,7 @@ export const MainLayout = ({ children }: { children: ReactNode }) => {
           <div className="flex-none">
             <ul className="menu menu-horizontal px-1">
               <li>
-                <Link href="/admin/dni">DNI's</Link>
+                <Link href="/admin/dni">DNI{`'`}s</Link>
               </li>
               <li>
                 <Link href="/admin/user">Users</Link>
