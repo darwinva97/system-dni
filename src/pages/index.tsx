@@ -1,10 +1,8 @@
-import type { GetStaticProps } from "next";
-
 const Index = () => {
   return null;
 };
 
-export const getStaticProps: GetStaticProps = () => {
+export const getServerSideProps = () => {
   return {
     props: {},
     redirect: {
