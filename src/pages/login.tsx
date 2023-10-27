@@ -13,7 +13,7 @@ const SignIn = () => {
     e.preventDefault();
     await signIn("credentials", {
       ...credentials,
-      callbackUrl: "/admin",
+      callbackUrl: "/admin/me",
       redirect: true,
     });
   };

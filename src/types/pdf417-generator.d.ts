@@ -4,6 +4,6 @@ declare module "pdf417-generator" {
     draw;
   };
   export default {
-    draw: (qrText: string, canvas: HTMLCanvasElement) => void;
-  }
+    draw,
+  };
 }

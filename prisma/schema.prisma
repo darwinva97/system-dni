@@ -6,24 +6,13 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider     = "mysql"
     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
-}
-
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User @relation(fields: [createdById], references: [id])
-    createdById Int
-
-    @@index([name])
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
 }
 
 // Necessary for Next auth
@@ -43,6 +32,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -51,6 +41,14 @@ model Session {
     userId       Int
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+}
+
+enum UserRole {
+    owner
+    admin
+    user
 }
 
 model User {
@@ -58,10 +56,9 @@ model User {
     name     String    @unique
     email    String    @unique
     password String
-    role     String
+    role     UserRole
     accounts Account[]
     sessions Session[]
-    posts    Post[]
 }
 
 model VerificationToken {
@@ -73,7 +70,7 @@ model VerificationToken {
 }
 
 model Dni {
-    document       BigInt @id
+    document       Int    @id
     photoFace      String
     photoSignature String
     surname        String
@@ -84,7 +81,7 @@ model Dni {
     birthDate      String
     issueDate      String
     expiryDate     String
-    tramitNumber   BigInt
+    tramitNumber   String
     codePDF417     String
     donor          String
 

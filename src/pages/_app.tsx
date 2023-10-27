@@ -17,7 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         <header>
           <div className="navbar bg-base-100">
             <div className="flex-1">
-              Dashboard
+              <Link href="/admin/me">Dashboard</Link>
             </div>
             <div className="flex-none">
               <ul className="menu menu-horizontal px-1">

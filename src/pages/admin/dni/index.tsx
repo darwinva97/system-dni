@@ -3,33 +3,70 @@ import Link from "next/link";
 
 const Admin = () => {
   const { data: dnis, refetch } = api.dni.getAll.useQuery();
-  const { mutateAsync: deleteUser, isLoading: isDeleteLoading } =
-    api.user.delete.useMutation();
+  const { mutateAsync: deleteDni, isLoading: isDeleteLoading } =
+    api.dni.delete.useMutation();
   return (
-    <div>
-      <header>
-        <h2>DNIs</h2>
-        <Link href={"/admin/dni/create"}>Create</Link>
+    <div className="flex max-w-full flex-col items-center">
+      <header className="mb-4 flex justify-center gap-4">
+        <h2 className="text-2xl">DNIs</h2>
+        <Link className="btn btn-primary btn-sm" href={"/admin/dni/create"}>
+          Crear nuevo
+        </Link>
       </header>
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
+
+      <div className="max-w-full overflow-x-auto">
+        <table className="table table-zebra table-pin-rows">
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Actions</th>
+            <tr className="text-center">
+              <th>DNI</th>
+              <th>Nombres</th>
+              <th>Apellido</th>
+              <th>Opciones</th>
             </tr>
           </thead>
           <tbody>
-            {dnis?.map(({ document }, index) => (
+            {dnis?.map(({ document, name, surname }, index) => (
               <tr
-                className={index % 2 === 0 ? "bg-base-100" : "bg-base-200"}
+                className={
+                  "hover text-center " +
+                  (index % 2 === 0 ? "bg-base-100" : "bg-base-200")
+                }
                 key={document}
               >
-                {document}
+                <td>{document}</td>
+                <td>{name}</td>
+                <td>{surname}</td>
+                <td>
+                  <div className="flex justify-center gap-1">
+                    <button
+                      disabled={isDeleteLoading}
+                      onClick={async () => {
+                        const confirm = window.confirm(
+                          `Estas seguro de ELIMINAR a ${document} (${name} ${surname})?`,
+                        );
+                        if (confirm) {
+                          await deleteDni(document);
+                          await refetch();
+                        }
+                      }}
+                      className="btn btn-warning btn-sm"
+                    >
+                      Eliminar
+                    </button>
+                    <Link
+                      href={`/admin/dni/edit/${document}`}
+                      className="btn btn-info btn-sm"
+                    >
+                      Editar
+                    </Link>
+                    <Link
+                      href={`/dni/${document}`}
+                      className="btn btn-primary btn-sm"
+                    >
+                      Ver
+                    </Link>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

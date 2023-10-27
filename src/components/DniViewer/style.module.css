@@ -179,23 +179,39 @@
 }
 
 .dniAddressInc {
-  font-size: calc(12px * var(--dniSizeMultiplier));
+  font-size: calc(16px * var(--dniSizeMultiplier));
   position: absolute;
   left: calc(8px * var(--dniSizeMultiplier));
   top: calc(11px * var(--dniSizeMultiplier));
 }
+.dniAddressIncTitle {
+  font-size: calc(14px * var(--dniSizeMultiplier));
+}
 
 .dniPlace {
-  font-size: calc(9px * var(--dniSizeMultiplier));
+  font-size: calc(16px * var(--dniSizeMultiplier));
   position: absolute;
   left: calc(8px * var(--dniSizeMultiplier));
   top: calc(42.5px * var(--dniSizeMultiplier));
 }
+.dniPlaceTitle {
+  font-size: calc(14px * var(--dniSizeMultiplier));
+}
+
+.dniPhotoInteriorMinisterSignature {
+  /* height: calc(30px * var(--dniSizeMultiplier)); */
+  width: calc(70px * var(--dniSizeMultiplier));
+  position: absolute;
+  top: calc(120px * var(--dniSizeMultiplier));
+  right: calc(120px * var(--dniSizeMultiplier));
+  object-fit: contain;
+}
 
 .dniMRZ {
-  font-size: calc(22.3px * var(--dniSizeMultiplier));
+  font-size: calc(20px * var(--dniSizeMultiplier));
+  letter-spacing: 1px;
   position: absolute;
-  font-family: "OCRB" !important;
+  font-family: "SourceCodePro";
   width: 100%;
   left: 0;
   right: 0;
@@ -207,7 +223,6 @@
   text-align: center;
   justify-content: center;
   white-space: pre-line;
-  font-family: "Courier New", Courier, monospace;
   font-variant-numeric: tabular-nums;
 }
 

@@ -2,43 +2,62 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
+const dniSchema = z.object({
+  document: z.number(),
+  photoFace: z.string(),
+  photoSignature: z.string(),
+  name: z.string(),
+  surname: z.string(),
+  sex: z.string(),
+  nationality: z.string(),
+  exemplar: z.string(),
+  birthDate: z.string(),
+  issueDate: z.string(),
+  expiryDate: z.string(),
+  tramitNumber: z.string(),
+  codePDF417: z.string(),
+  donor: z.string(),
+
+  address: z.string(),
+  birthPlace: z.string(),
+  cuil: z.string(),
+  interiorMinisterName: z.string(),
+  photoInteriorMinisterSignature: z.string(),
+  photoFingerPrint: z.string(),
+  mechanicalReadingArea: z.string(),
+
+  photoBgFront: z.string(),
+  photoBgBack: z.string(),
+});
+
 const checkIsAdminOrOwner = (role: string) =>
   role === "admin" || role === "owner";
 
 export const dniRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(
-      z.object({
-        document: z.number(),
-        photoFace: z.string(),
-        photoSignature: z.string(),
-        name: z.string(),
-        surname: z.string(),
-        sex: z.string(),
-        nationality: z.string(),
-        exemplar: z.string(),
-        birthDate: z.string(),
-        issueDate: z.string(),
-        expiryDate: z.string(),
-        tramitNumber: z.number(),
-        codePDF417: z.string(),
-        donor: z.string(),
-
-        address: z.string(),
-        birthPlace: z.string(),
-        cuil: z.string(),
-        interiorMinisterName: z.string(),
-        photoInteriorMinisterSignature: z.string(),
-        photoFingerPrint: z.string(),
-        mechanicalReadingArea: z.string(),
-
-        photoBgFront: z.string(),
-        photoBgBack: z.string(),
-      }),
-    )
+    .input(dniSchema)
     .mutation(async ({ ctx, input }) => {
       return ctx.db.dni.create({
         data: input,
+      });
+    }),
+
+  edit: protectedProcedure
+    .input(
+      dniSchema.extend({
+        prevDocument: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const data: Omit<typeof input, "prevDocument"> & {
+        prevDocument?: number;
+      } = { ...input };
+      delete data.prevDocument;
+      return ctx.db.dni.update({
+        data,
+        where: {
+          document: input.prevDocument,
+        },
       });
     }),
 

@@ -9,6 +9,7 @@ import {
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import { db } from "@/server/db";
+import type { User, UserRole } from "@prisma/client";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -17,19 +18,18 @@ import { db } from "@/server/db";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 declare module "next-auth" {
-  type UserRole = "owner" | "admin" | "user";
-
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
-      id: string;
+      id: number;
       // ...other properties
-      role: UserRole | string;
+      role: UserRole;
     };
   }
 
   interface User extends DefaultUser {
+    id: number;
     // ...other properties
-    role: UserRole | string;
+    role: UserRole;
   }
 }
 
@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
       };
     },
   },
-  // adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(db),
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -72,27 +72,20 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, _req) {
         if (!(credentials?.email && credentials?.password)) return null;
-        const user = await db.user.findFirstOrThrow({
+        const user = await db.user.findUniqueOrThrow({
           where: {
-            email: {
-              equals: credentials.email.trim().toLowerCase(),
-            },
+            email: credentials.email.trim().toLowerCase(),
             password: credentials.password.trim(),
           },
         });
         return user;
       },
     }),
-    /**
-     * ...add more providers here.
-     *
-     * Most other providers require a bit more work than the Discord provider. For example, the
-     * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-     * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-     *
-     * @see https://next-auth.js.org/providers/github
-     */
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 60 * 60 * 24 * 30,
+  },
 };
 
 /**

@@ -1,9 +1,17 @@
-import React from 'react'
+import { GetStaticProps } from "next";
 
-const Admin = () => {
-  return (
-    <div>Admin</div>
-  )
-}
+const Index = () => {
+  return null;
+};
 
-export default Admin
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  return {
+    props: {},
+    redirect: {
+      destination: "/admin/me",
+      permanent: true,
+    },
+  };
+};
+
+export default Index;
