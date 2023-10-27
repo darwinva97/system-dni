@@ -48,21 +48,29 @@ export const FrontDniForm = ({
       />
 
       <Input
+        type="date"
         label="Fecha Nacimiento"
-        value={dni.birthDate}
-        onChange={(e) => setDni({ ...dni, birthDate: e.target.value })}
+        value={new Date(dni.birthDate).toISOString().split("T")[0]}
+        onChange={(e) =>
+          setDni({ ...dni, birthDate: new Date(e.target.value) })
+        }
       />
 
       <Input
+        type="date"
         label="Fecha Emisión"
-        value={dni.issueDate}
-        onChange={(e) => setDni({ ...dni, issueDate: e.target.value })}
+        value={new Date(dni.issueDate).toISOString().split("T")[0]}
+        onChange={(e) =>
+          setDni({ ...dni, issueDate: new Date(e.target.value) })
+        }
       />
 
       <Input
         label="Fecha vencimiento"
-        value={dni.expiryDate}
-        onChange={(e) => setDni({ ...dni, expiryDate: e.target.value })}
+        value={new Date(dni.expiryDate).toISOString().split("T")[0]}
+        onChange={(e) =>
+          setDni({ ...dni, expiryDate: new Date(e.target.value) })
+        }
       />
 
       <Input

@@ -9,18 +9,19 @@ export const defaultDni = {
   sex: "A",
   nationality: "ARGENTINA",
   exemplar: "A",
-  birthDate: "24 SET/ SET 2004",
-  issueDate: "09 JUN/ JUN 2022",
-  expiryDate: "09 JUN/ JUN 2037",
+  birthDate: new Date("2004-09-24"),
+  issueDate: new Date("2022-06-09"),
+  expiryDate: new Date("2037-06-09"),
   tramitNumber: "006900326987238",
   codePDF417: "",
   donor: "",
 
-  address: "",
+  address: "CALLE 1 B 1111 FUNES ROSARIO SANTA FE",
   birthPlace: "",
   cuil: "",
   interiorMinisterName: "",
-  photoInteriorMinisterSignature: "",
+  photoInteriorMinisterSignature:
+    "https://res.cloudinary.com/dpcglvg6o/image/upload/v1698364398/systemdni_uploads/j8zxslocrazthjjfchp9.png",
   photoFingerPrint: "",
   mechanicalReadingArea: `IDARG47766614<1<<<<<<<<<<<<<<<
 0702197M3605200ARG<<<<<<<<<<<0

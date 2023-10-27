@@ -1,14 +1,17 @@
-import { useSession } from "next-auth/react";
-import React from "react";
+import { GetStaticProps } from "next";
 
 const Index = () => {
-  const { data: session } = useSession();
-  return (
-    <div>
-      <h1 className="text-center text-3xl">456 Documents created!</h1>
-      {session && <pre>{JSON.stringify(session, null, 3)}</pre>}
-    </div>
-  );
+  return null;
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  return {
+    props: {},
+    redirect: {
+      destination: "/login",
+      permanent: true,
+    },
+  };
 };
 
 export default Index;

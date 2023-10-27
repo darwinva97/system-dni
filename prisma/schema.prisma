@@ -78,9 +78,9 @@ model Dni {
     sex            String
     nationality    String
     exemplar       String
-    birthDate      String
-    issueDate      String
-    expiryDate     String
+    birthDate      DateTime
+    issueDate      DateTime
+    expiryDate     DateTime
     tramitNumber   String
     codePDF417     String
     donor          String

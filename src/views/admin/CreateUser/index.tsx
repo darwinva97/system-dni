@@ -24,13 +24,13 @@ export const CreateUser = () => {
         email: "",
         password: "",
         role: "user",
-      })
+      });
     }
   };
   return (
-    <div>
-      <h1>CreateUser</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="flex flex-col items-center gap-3">
+      <h1 className="text-2xl">Crear usuario</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col items-center gap-3">
         <input
           type="text"
           placeholder="name"

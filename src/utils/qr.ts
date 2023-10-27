@@ -19,8 +19,8 @@ export function generateQR(
   surname = surname || "Irala";
   name = name || "Tomas";
   sex = sex || "E";
-  birthDate = new Date(localStorage.getItem("dni_birthdate_raw") || null);
-  issueDate = new Date(localStorage.getItem("dni_emission_raw") || null);
+  birthDate = new Date(birthDate || null);
+  issueDate = new Date(issueDate || null);
   tramitNumber = String(
     localStorage.getItem("dni_tramite_num") || "0123456789012345",
   ).substring(0, 11);

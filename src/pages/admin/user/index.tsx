@@ -66,7 +66,6 @@ const Admin = () => {
                             );
                             if (!goNext) return;
                             const result = await deleteUser(id);
-                            console.log(result, "result");
                             refetch();
                           }}
                         >

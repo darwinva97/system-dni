@@ -11,9 +11,9 @@ const dniSchema = z.object({
   sex: z.string(),
   nationality: z.string(),
   exemplar: z.string(),
-  birthDate: z.string(),
-  issueDate: z.string(),
-  expiryDate: z.string(),
+  birthDate: z.date(),
+  issueDate: z.date(),
+  expiryDate: z.date(),
   tramitNumber: z.string(),
   codePDF417: z.string(),
   donor: z.string(),
@@ -87,7 +87,6 @@ export const dniRouter = createTRPCRouter({
           document: input,
         },
       });
-      console.log(result, "result");
       return result;
     }),
 });

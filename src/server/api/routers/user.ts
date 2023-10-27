@@ -136,7 +136,6 @@ export const userRouter = createTRPCRouter({
           id: input,
         },
       });
-      console.log(result, "result");
       return result;
     }),
 

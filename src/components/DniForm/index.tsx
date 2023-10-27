@@ -1,8 +1,4 @@
-import { PickImage } from "@/components/PickImage";
-import { Input } from "@/components/Input";
-import { api } from "@/utils/api";
 import { FormEventHandler, useState } from "react";
-import { Textarea } from "@/components/Textarea";
 import { DniViewer } from "@/components/DniViewer";
 import { Dni } from "@prisma/client";
 import { defaultDni } from "./data";
@@ -37,8 +33,8 @@ export const DniForm = ({
     postSave && (await postSave(dniSaved));
   };
   return (
-    <div className="flex gap-2 p-2">
-      <form onSubmit={handleSubmit} className="flex flex-col items-center">
+    <div className="flex gap-2 p-2 flex-wrap">
+      <form onSubmit={handleSubmit} className="flex flex-col items-center max-w-[64%]">
         <div className="tabs">
           {tabs.map((tabItem) => (
             <a
