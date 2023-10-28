@@ -27,7 +27,7 @@ const Admin = () => {
               <th>DNI</th>
               <th>Nombres</th>
               <th>Apellido</th>
-              {!meAsUser && <th>Opciones</th>}
+              <th>Opciones</th>
             </tr>
           </thead>
           <tbody>
@@ -44,31 +44,27 @@ const Admin = () => {
                 <td>{surname}</td>
                 <td>
                   <div className="flex justify-center gap-1">
-                    {!meAsUser && (
-                      <>
-                        <button
-                          disabled={isDeleteLoading}
-                          onClick={async () => {
-                            const confirm = window.confirm(
-                              `Estas seguro de ELIMINAR a ${document} (${name} ${surname})?`,
-                            );
-                            if (confirm) {
-                              await deleteDni(document);
-                              await refetch();
-                            }
-                          }}
-                          className="btn btn-warning btn-sm"
-                        >
-                          Eliminar
-                        </button>
-                        <Link
-                          href={`/admin/dni/edit/${document}`}
-                          className="btn btn-info btn-sm"
-                        >
-                          Editar
-                        </Link>
-                      </>
-                    )}
+                    <button
+                      disabled={isDeleteLoading}
+                      onClick={async () => {
+                        const confirm = window.confirm(
+                          `Estas seguro de ELIMINAR a ${document} (${name} ${surname})?`,
+                        );
+                        if (confirm) {
+                          await deleteDni(document);
+                          await refetch();
+                        }
+                      }}
+                      className="btn btn-warning btn-sm"
+                    >
+                      Eliminar
+                    </button>
+                    <Link
+                      href={`/admin/dni/edit/${document}`}
+                      className="btn btn-info btn-sm"
+                    >
+                      Editar
+                    </Link>
                     <Link
                       href={`/dni/${document}`}
                       className="btn btn-primary btn-sm"

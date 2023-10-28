@@ -2,37 +2,39 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
-import { checkIsAdminOrOwner } from "@/utils/checks";
+import { checkIsAdminOrOwner, checkIsUser } from "@/utils/checks";
+
+const onlyDniSchema = z.object({
+  document: z.number(),
+  photoFace: z.string(),
+  photoSignature: z.string(),
+  name: z.string(),
+  surname: z.string(),
+  sex: z.string(),
+  nationality: z.string(),
+  exemplar: z.string(),
+  birthDate: z.date(),
+  issueDate: z.date(),
+  expiryDate: z.date(),
+  tramitNumber: z.string(),
+  codePDF417: z.string(),
+  donor: z.string(),
+  officeNumber: z.string(),
+
+  address: z.string(),
+  birthPlace: z.string(),
+  cuil: z.string(),
+  interiorMinisterName: z.string(),
+  photoInteriorMinisterSignature: z.string(),
+  photoFingerPrint: z.string(),
+  mechanicalReadingArea: z.string(),
+
+  photoBgFront: z.string(),
+  photoBgBack: z.string(),
+});
 
 const dniSchema = z.object({
-  dni: z.object({
-    document: z.number(),
-    photoFace: z.string(),
-    photoSignature: z.string(),
-    name: z.string(),
-    surname: z.string(),
-    sex: z.string(),
-    nationality: z.string(),
-    exemplar: z.string(),
-    birthDate: z.date(),
-    issueDate: z.date(),
-    expiryDate: z.date(),
-    tramitNumber: z.string(),
-    codePDF417: z.string(),
-    donor: z.string(),
-    officeNumber: z.string(),
-
-    address: z.string(),
-    birthPlace: z.string(),
-    cuil: z.string(),
-    interiorMinisterName: z.string(),
-    photoInteriorMinisterSignature: z.string(),
-    photoFingerPrint: z.string(),
-    mechanicalReadingArea: z.string(),
-
-    photoBgFront: z.string(),
-    photoBgBack: z.string(),
-  }),
+  dni: onlyDniSchema,
   users: z.array(z.number()),
 });
 
@@ -137,6 +139,35 @@ export const dniRouter = createTRPCRouter({
       });
     }),
 
+  userEDitDni: protectedProcedure
+    .input(
+      z.object({
+        dni: onlyDniSchema,
+        prevDocument: z.number(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const isUser = checkIsUser(ctx.session.user.role);
+
+      if (!isUser) return null;
+
+      const dniUpdated = await ctx.db.dni.update({
+        where: {
+          document: input.prevDocument,
+          users: {
+            some: {
+              userId: ctx.session.user.id,
+            },
+          },
+        },
+        data: {
+          ...input.dni,
+        },
+      });
+
+      return dniUpdated;
+    }),
+
   getDniById: protectedProcedure
     .input(z.number())
     .query(async ({ ctx, input }) => {
@@ -144,6 +175,20 @@ export const dniRouter = createTRPCRouter({
         where: {
           document: input,
         },
+        include: {
+          users: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  role: true,
+                  email: true,
+                },
+              },
+            },
+          },
+        }
       });
     }),
 

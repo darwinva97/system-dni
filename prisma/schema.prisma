@@ -103,10 +103,10 @@ model Dni {
 }
 
 model DniOnUsers {
-    user   User @relation(fields: [userId], references: [id])
+    user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId Int
 
-    dni   Dni @relation(fields: [dniId], references: [document])
+    dni   Dni @relation(fields: [dniId], references: [document], onDelete: Cascade)
     dniId Int
 
     @@id([userId, dniId])

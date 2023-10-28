@@ -6,6 +6,7 @@ import { FrontDniForm } from "./Front";
 import { BackDniForm } from "./Back";
 import { ImagesDniForm } from "./Images";
 import UsersDniForm from "./Users";
+import { useSession } from "next-auth/react";
 
 type TTab = "Adelante" | "Atrás" | "Imágenes" | "Users";
 const tabs = ["Adelante", "Atrás", "Imágenes", "Users"] as const;
@@ -27,6 +28,8 @@ export const DniForm = ({
   const [isFlipped, setIsFlipped] = useState(false);
   const [newDni, setDni] = useState(dni ?? defaultDni);
   const [newUsers, setUsers] = useState(users ?? []);
+  const { data: session } = useSession();
+  const meAsUser = session?.user?.role === "user";
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const dniSaved = await saveDni(newDni, newUsers);
@@ -45,17 +48,19 @@ export const DniForm = ({
         className="flex max-w-[64%] flex-col items-center"
       >
         <div className="tabs">
-          {tabs.map((tabItem) => (
-            <a
-              key={tabItem}
-              className={`tab tab-bordered ${
-                tab === tabItem ? "tab-active" : ""
-              }`}
-              onClick={() => setTab(tabItem)}
-            >
-              {tabItem}
-            </a>
-          ))}
+          {tabs
+            .filter((tabItem) => (meAsUser ? tabItem !== "Users" : true))
+            .map((tabItem) => (
+              <a
+                key={tabItem}
+                className={`tab tab-bordered ${
+                  tab === tabItem ? "tab-active" : ""
+                }`}
+                onClick={() => setTab(tabItem)}
+              >
+                {tabItem}
+              </a>
+            ))}
         </div>
         <div className="flex flex-wrap gap-2 p-2">
           {tab === "Adelante" && <FrontDniForm dni={newDni} setDni={setDni} />}
@@ -64,7 +69,7 @@ export const DniForm = ({
 
           {tab === "Imágenes" && <ImagesDniForm dni={newDni} setDni={setDni} />}
 
-          {tab === "Users" && (
+          {!meAsUser && tab === "Users" && (
             <UsersDniForm
               dni={newDni}
               setDni={setDni}
