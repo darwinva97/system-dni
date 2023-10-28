@@ -4,7 +4,10 @@ import { formatDate, parseDocument } from "@/utils/parse";
 import { useEffect, useRef } from "react";
 import { generateQR } from "@/utils/qr";
 
-export const DniFront = (dni: Dni) => {
+export const DniFront = ({
+  isFlipped,
+  ...dni
+}: Dni & { isFlipped: boolean }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const {
     document,
@@ -166,6 +169,7 @@ export const DniFront = (dni: Dni) => {
         ref={canvasRef}
         width="141"
         height="68"
+        style={{ display: isFlipped ? "none" : "block" }}
         className={[classes.dniItem, classes.dniQR].join(" ")}
       ></canvas>
     </>

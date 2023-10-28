@@ -43,7 +43,9 @@ export const DniViewer = ({ dni, isFlipped, setIsFlipped }: TDniViewer) => {
           },
         }}
       >
-        <DniFront {...dni} />
+        <DniFront {...dni}
+        isFlipped={isFlipped}
+        />
         <DniBack {...dni} />
       </CardFlip>
       <div className="flex gap-[8px]">
