@@ -2,7 +2,7 @@ import { Input } from "@/components/Input";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/utils/api";
 import { checkIsAdminOrOwner } from "@/utils/checks";
-import { Dni } from "@prisma/client";
+import type { Dni } from "@prisma/client";
 import type { GetServerSideProps } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -18,7 +18,7 @@ const EditUser = () => {
   const { data: user, refetch } = api.user.adminGetUserById.useQuery(id);
   const { data: allDnis } = api.dni.getAll.useQuery();
   const [dnis, setDnis] = useState<Dni[]>(
-    user?.dnis.map((dni) => dni.dni) || [],
+    user?.dnis.map((dni) => dni.dni) ?? [],
   );
   const [formData, setFormData] = useState(
     user?.password
@@ -111,7 +111,7 @@ const EditUser = () => {
         </div>
 
         <div>
-          <span>DNI's</span>
+          <span>DNI{`'`}s</span>
           <p>
             (Esto sólo se aplicará si el usuario no es administrador o
             propietario)

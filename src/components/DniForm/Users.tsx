@@ -14,7 +14,7 @@ const UsersDniForm = ({
   setUsers: (users: Omit<User, "password">[]) => void;
 }) => {
   const { data: allUsers } = api.user.getAll.useQuery();
-  const allAllowUsers = allUsers?.filter((user) => user.role === "user") || [];
+  const allAllowUsers = allUsers?.filter((user) => user.role === "user") ?? [];
   const options = [
     {
       options: allAllowUsers
