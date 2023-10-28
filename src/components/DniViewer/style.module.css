@@ -134,7 +134,6 @@
   top: calc(55px * var(--dniSizeMultiplier));
   left: calc(10px * var(--dniSizeMultiplier));
   object-fit: cover;
-  filter: blur(0.2px);
 }
 
 .dniFirma {
