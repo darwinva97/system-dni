@@ -1,11 +1,14 @@
 import { api } from "@/utils/api";
 import { DniForm } from "@/components/DniForm";
-import type { Dni } from "@prisma/client";
+import type { Dni, User } from "@prisma/client";
 
 const CreateDni = () => {
   const createDni = api.dni.create.useMutation();
-  const saveDni = async (dni: Dni) => {
-    const dniCreated = await createDni.mutateAsync(dni);
+  const saveDni = async (dni: Dni, users: Omit<User, "password">[]) => {
+    const dniCreated = await createDni.mutateAsync({
+      dni,
+      users: users.map((user) => user.id),
+    });
     return dniCreated;
   };
   return (

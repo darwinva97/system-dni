@@ -1,7 +1,7 @@
 import { api } from "@/utils/api";
 import { useMemo } from "react";
 import { DniForm } from "@/components/DniForm";
-import type { Dni } from "@prisma/client";
+import type { Dni, User } from "@prisma/client";
 import { useRouter } from "next/router";
 
 const EditDni = () => {
@@ -9,10 +9,11 @@ const EditDni = () => {
   const document = useMemo(() => Number(router.query.id), [router.query.id]);
   const { data: dni } = api.dni.getDniById.useQuery(document);
   const editDni = api.dni.edit.useMutation();
-  const saveDni = async (dni: Dni) => {
+  const saveDni = async (dni: Dni, users: Omit<User, "password">[]) => {
     const dniUpdated = await editDni.mutateAsync({
       prevDocument: document,
-      ...dni,
+      dni,
+      users: users.map((user) => user.id),
     });
     return dniUpdated;
   };

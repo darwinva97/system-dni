@@ -2,45 +2,69 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
+import { checkIsAdminOrOwner } from "@/utils/checks";
+
 const dniSchema = z.object({
-  document: z.number(),
-  photoFace: z.string(),
-  photoSignature: z.string(),
-  name: z.string(),
-  surname: z.string(),
-  sex: z.string(),
-  nationality: z.string(),
-  exemplar: z.string(),
-  birthDate: z.date(),
-  issueDate: z.date(),
-  expiryDate: z.date(),
-  tramitNumber: z.string(),
-  codePDF417: z.string(),
-  donor: z.string(),
-  officeNumber: z.string(),
+  dni: z.object({
+    document: z.number(),
+    photoFace: z.string(),
+    photoSignature: z.string(),
+    name: z.string(),
+    surname: z.string(),
+    sex: z.string(),
+    nationality: z.string(),
+    exemplar: z.string(),
+    birthDate: z.date(),
+    issueDate: z.date(),
+    expiryDate: z.date(),
+    tramitNumber: z.string(),
+    codePDF417: z.string(),
+    donor: z.string(),
+    officeNumber: z.string(),
 
-  address: z.string(),
-  birthPlace: z.string(),
-  cuil: z.string(),
-  interiorMinisterName: z.string(),
-  photoInteriorMinisterSignature: z.string(),
-  photoFingerPrint: z.string(),
-  mechanicalReadingArea: z.string(),
+    address: z.string(),
+    birthPlace: z.string(),
+    cuil: z.string(),
+    interiorMinisterName: z.string(),
+    photoInteriorMinisterSignature: z.string(),
+    photoFingerPrint: z.string(),
+    mechanicalReadingArea: z.string(),
 
-  photoBgFront: z.string(),
-  photoBgBack: z.string(),
+    photoBgFront: z.string(),
+    photoBgBack: z.string(),
+  }),
+  users: z.array(z.number()),
 });
-
-const checkIsAdminOrOwner = (role: string) =>
-  role === "admin" || role === "owner";
 
 export const dniRouter = createTRPCRouter({
   create: protectedProcedure
     .input(dniSchema)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.dni.create({
-        data: input,
+      const newDni = await ctx.db.dni.create({
+        data: {
+          ...input.dni,
+          users: {
+            create: input.users.map((userId) => ({
+              userId,
+            })),
+          },
+        },
+        include: {
+          users: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  role: true,
+                  email: true,
+                },
+              },
+            },
+          },
+        },
       });
+      return newDni;
     }),
 
   edit: protectedProcedure
@@ -50,14 +74,65 @@ export const dniRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const data: Omit<typeof input, "prevDocument"> & {
-        prevDocument?: number;
-      } = { ...input };
-      delete data.prevDocument;
-      return ctx.db.dni.update({
+      const { dni: data, prevDocument, users: nextUserIds } = input;
+      const dniUpdated = await ctx.db.dni.update({
         data,
         where: {
-          document: input.prevDocument,
+          document: prevDocument,
+        },
+        include: {
+          users: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      });
+      const currentUserIds = dniUpdated.users.map((user) => user.user.id);
+      const usersToRemove = currentUserIds.filter(
+        (id) => !nextUserIds.includes(id),
+      );
+      const usersToAdd = nextUserIds.filter(
+        (id) => !currentUserIds.includes(id),
+      );
+
+      for (const userId of usersToRemove) {
+        await ctx.db.dniOnUsers.delete({
+          where: {
+            userId_dniId: {
+              userId,
+              dniId: prevDocument,
+            },
+          },
+        });
+      }
+
+      for (const userId of usersToAdd) {
+        await ctx.db.dniOnUsers.create({
+          data: {
+            userId,
+            dniId: prevDocument,
+          },
+        });
+      }
+
+      return await ctx.db.dni.findFirst({
+        where: {
+          document: prevDocument,
+        },
+        include: {
+          users: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  role: true,
+                  email: true,
+                },
+              },
+            },
+          },
         },
       });
     }),
@@ -73,7 +148,19 @@ export const dniRouter = createTRPCRouter({
     }),
 
   getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.dni.findMany();
+    const isAdminOrOwner = checkIsAdminOrOwner(ctx.session.user.role);
+    if (isAdminOrOwner) {
+      return ctx.db.dni.findMany();
+    }
+    return ctx.db.dni.findMany({
+      where: {
+        users: {
+          some: {
+            userId: ctx.session.user.id,
+          },
+        },
+      },
+    });
   }),
 
   delete: protectedProcedure

@@ -1,6 +1,9 @@
 import { DniViewer } from "@/components/DniViewer";
+import { getServerAuthSession } from "@/server/auth";
+import { db } from "@/server/db";
 import { api } from "@/utils/api";
 import { formatDatePublicDni } from "@/utils/parse";
+import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -58,6 +61,58 @@ const Dni = () => {
       </div>
     </>
   );
+};
+
+const objAllow = {
+  props: {},
+};
+
+const objNotAllow = {
+  redirect: {
+    destination: "/admin/me",
+    permanent: false,
+  },
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const document = Number(ctx.query.document);
+
+  if (!document) return objAllow;
+
+  const session = await getServerAuthSession(ctx);
+  if (!session)
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+
+  const isUser = session.user.role === "user";
+  if (!isUser) return objAllow;
+
+  const dniData = await db.dni.findFirst({
+    where: {
+      document,
+    },
+    include: {
+      users: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });
+
+  if (!dniData) return objNotAllow;
+
+  const matchUser = dniData.users.find((user) => {
+    return user.userId === session.user.id;
+  });
+
+  if (matchUser) return objAllow;
+
+  return objNotAllow;
 };
 
 export default Dni;

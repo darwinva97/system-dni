@@ -1,4 +1,7 @@
+import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/utils/api";
+import { checkIsAdminOrOwner } from "@/utils/checks";
+import type { GetServerSideProps } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
@@ -88,6 +91,28 @@ const Admin = () => {
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const session = await getServerAuthSession(ctx);
+  if (!session)
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  const isAdminOrOwner = checkIsAdminOrOwner(session.user.role);
+  if (!isAdminOrOwner)
+    return {
+      redirect: {
+        destination: "/admin/me",
+        permanent: false,
+      },
+    };
+  return {
+    props: {},
+  };
 };
 
 export default Admin;

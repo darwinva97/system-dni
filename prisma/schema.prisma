@@ -59,6 +59,8 @@ model User {
     role     UserRole
     accounts Account[]
     sessions Session[]
+
+    dnis DniOnUsers[]
 }
 
 model VerificationToken {
@@ -96,4 +98,18 @@ model Dni {
 
     photoBgFront String
     photoBgBack  String
+
+    users DniOnUsers[]
+}
+
+model DniOnUsers {
+    user   User @relation(fields: [userId], references: [id])
+    userId Int
+
+    dni   Dni @relation(fields: [dniId], references: [document])
+    dniId Int
+
+    @@id([userId, dniId])
+    @@index([userId])
+    @@index([dniId])
 }

@@ -1,13 +1,11 @@
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import type { User } from "@prisma/client";
-
-const checkIsOwner = (role: string) => role === "owner";
-const checkIsAdmin = (role: string) => role === "admin";
-
-const checkIsAdminOrOwner = (role: string) =>
-  role === "admin" || role === "owner";
+import {
+  checkIsAdmin,
+  checkIsAdminOrOwner,
+  checkIsOwner,
+} from "@/utils/checks";
 
 export const userRouter = createTRPCRouter({
   create: protectedProcedure
@@ -41,10 +39,34 @@ export const userRouter = createTRPCRouter({
     .input(z.number())
     .query(async ({ ctx, input }) => {
       const isAdminOrOwner = checkIsAdminOrOwner(ctx.session.user.role);
+      const isOwner = checkIsOwner(ctx.session.user.role);
+
+      if (isOwner) {
+        return ctx.db.user.findUnique({
+          where: {
+            id: input,
+          },
+          include: {
+            dnis: {
+              include: {
+                dni: true,
+              },
+            },
+          },
+        });
+      }
+
       if (isAdminOrOwner) {
         const userData = await ctx.db.user.findUnique({
           where: {
             id: input,
+          },
+          include: {
+            dnis: {
+              include: {
+                dni: true,
+              },
+            },
           },
         });
         if (!userData) return null;
@@ -52,7 +74,7 @@ export const userRouter = createTRPCRouter({
         const isMatch = ctx.session.user.id === input;
 
         if (!isMatch && isAdmin) {
-          const withoutPassword: Omit<User, "password"> & {
+          const withoutPassword: Omit<typeof userData, "password"> & {
             password?: string;
           } = {
             ...userData,
@@ -62,6 +84,7 @@ export const userRouter = createTRPCRouter({
         }
         return userData;
       }
+
       return null;
     }),
 
@@ -118,6 +141,69 @@ export const userRouter = createTRPCRouter({
           id: input.id,
         },
         data: input,
+      });
+    }),
+
+  editUserWithDnis: protectedProcedure
+    .input(
+      z.object({
+        user: z.object({
+          id: z.number(),
+          name: z.string().min(1),
+          email: z.string().min(1),
+          password: z.string().min(1),
+          role: z.enum(["admin", "user", "owner"]),
+        }),
+        dnis: z.array(z.number()),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const isAdminOrOwner = checkIsAdminOrOwner(ctx.session.user.role);
+
+      if (!isAdminOrOwner) return null;
+
+      const userUpdated = await ctx.db.user.update({
+        where: {
+          id: input.user.id,
+        },
+        data: input.user,
+      });
+
+      if (!userUpdated) return null;
+
+      console.log(input, "input");
+
+      const { count } = await ctx.db.dniOnUsers.deleteMany({
+        where: {
+          userId: input.user.id,
+        },
+      });
+
+      console.log(count, "count");
+
+      for (const dniId of input.dnis) {
+        await ctx.db.dniOnUsers.create({
+          data: {
+            userId: input.user.id,
+            dniId,
+          },
+        });
+      }
+
+      console.log(input.dnis, "dnis");
+
+      return await ctx.db.user.update({
+        where: {
+          id: input.user.id,
+        },
+        data: input.user,
+        include: {
+          dnis: {
+            include: {
+              dni: true,
+            },
+          },
+        },
       });
     }),
 

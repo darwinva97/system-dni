@@ -1,8 +1,11 @@
-import { signOut } from "next-auth/react";
+import { checkIsAdminOrOwner } from "@/utils/checks";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { ReactNode } from "react";
 
 export const MainLayout = ({ children }: { children: ReactNode }) => {
+  const { data: session } = useSession();
+  const isAdminOrOwner = session && checkIsAdminOrOwner(session?.user.role);
   return (
     <div>
       <header>
@@ -15,9 +18,11 @@ export const MainLayout = ({ children }: { children: ReactNode }) => {
               <li>
                 <Link href="/admin/dni">DNI{`'`}s</Link>
               </li>
-              <li>
-                <Link href="/admin/user">Users</Link>
-              </li>
+              {isAdminOrOwner && (
+                <li>
+                  <Link href="/admin/user">Users</Link>
+                </li>
+              )}
               <li>
                 <button onClick={() => void signOut()}>Logout</button>
               </li>
